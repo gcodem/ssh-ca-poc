@@ -1,5 +1,7 @@
 # Introduction
 
+### Readme in progress
+
 ### Steps
 
 terraform plan -target=module.vault
@@ -50,3 +52,30 @@ vault write ssh-client-signer/sign/my-role \
 save it
 vault write -field=signed_key ssh-client-signer/sign/my-role \
  public_key=@$HOME/.ssh/id_rsa.pub > signed-cert.pub
+
+vault operator init \
+ -recovery-shares 5 \
+ -recovery-threshold 3
+vault login
+vault secrets enable -path=ssh-client-signer ssh
+
+vault write ssh-client-signer/config/ca \
+    private_key=@/home/gev/.ssh/gcplabcakey \
+    public_key=@/home/gev/.ssh/gcplabcakey.pub
+
+```text
+vault write ssh-client-signer/roles/my-role -<<"EOH"
+{
+  "algorithm_signer": "rsa-sha2-256",
+  "allow_user_certificates": true,
+  "allowed_users": "*",
+  "allowed_extensions": "permit-pty,permit-port-forwarding",
+  "default_extensions": {
+    "permit-pty": ""
+  },
+  "key_type": "ca",
+  "default_user": "gevorg",
+  "ttl": "30m0s"
+}
+EOH
+```
