@@ -1,44 +1,45 @@
-# Create a Google Cloud Compute Engine network
-resource "google_compute_network" "my_network" {
-  name                    = var.network_name
-  project                 = google_project.my_project.project_id
-  auto_create_subnetworks = true
+resource "google_compute_network" "vpc_network" {
+  name = var.network_name
 }
 
-# Create a Google Cloud Compute Engine firewall rule to allow SSH access
-resource "google_compute_firewall" "allow_ssh" {
-  name    = "allow-ssh"
-  network = google_compute_network.my_network.name
-  allow {
-    protocol = "tcp"
-    ports    = ["22"]
-  }
-  source_ranges = ["0.0.0.0/0"]
-}
-
-# Create a Google Cloud Compute Engine instance template
-resource "google_compute_instance_template" "my_template" {
-  name = "my-template"
+resource "google_compute_instance" "vm" {
+  name         = "vm-${count.index + 1}"
+  count        = var.vm_count
   machine_type = var.machine_type
-  network_interface {
-    network = google_compute_network.my_network.name
+  tags         = ["demo-vm-instance"]
+
+  # Use the specified image
+  boot_disk {
+    initialize_params {
+      image = var.image
+    }
   }
+
   metadata = {
     ssh-keys = var.ssh_key
   }
-  disk {
-    image  = "ubuntu-os-cloud/ubuntu-2004-focal-v20221210"
-    size   = 20
-    type   = "pd-standard"
-    delete_protection = false
+
+  network_interface {
+    network = google_compute_network.vpc_network.name
+    access_config {
+    }
   }
+
 }
 
-# Create multiple Google Cloud Compute Engine instances based on the instance template
-resource "google_compute_instance" "vm" {
-  count       = var.num_vms
-  name        = "vm-${count.index}"
-  project     = google_project.my_project.project_id
-  zone        = var.zone
-  instance_template = google_compute_instance_template.my_template.self_link
+# Output the IP addresses of the created VMs
+# output "vm_ip_addresses" {
+#   value = google_compute_instance.vm.*.network_interface.0.access_config.0.assigned_nat_ip
+# }
+
+
+resource "google_compute_firewall" "ssh-rule" {
+  name    = "demo-ssh"
+  network = google_compute_network.vpc_network.name
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "8200", "8201"]
+  }
+  target_tags   = ["demo-vm-instance"]
+  source_ranges = ["0.0.0.0/0"]
 }
