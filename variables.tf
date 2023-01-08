@@ -1,3 +1,12 @@
+variable "credentials" {
+  type        = string
+  description = "Path to the JSON file with the service account credentials."
+}
+
+variable "ssh_key" {
+  type = string
+}
+
 variable "project_id" {
   type = string
 }
@@ -6,49 +15,19 @@ variable "region" {
   type = string
 }
 
-variable "credentials" {
-  type        = string
-  description = "Path to the JSON file with the service account credentials."
-}
-
-variable "network_name" {
-  type    = string
-  default = "gevorg-lab-network"
-}
-
-variable "machine_type" {
-  type    = string
-  default = "g1-small"
-}
-
-variable "vm_count" {
-  type    = number
-  default = "3"
-}
-
-variable "ssh_key" {
-  type = string
-}
-
 variable "zone" {
   type = string
 }
 
-variable "image" {
-  type    = string
-  default = "ubuntu-os-cloud/ubuntu-1804-lts"
-}
-
 variable "kms_keyring" {
   type        = string
-  default     = "vault-gevorg1"
+  default     = "vault-gevorg3"
   description = "Name of the GCP KMS keyring"
 }
 
-
 variable "kms_crypto_key" {
   type        = string
-  default     = "vault-gevorg-init1"
+  default     = "vault-gevorg-init3"
   description = "Name of the GCP KMS crypto key"
 }
 

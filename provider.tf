@@ -7,14 +7,11 @@ provider "google" {
 
 }
 
-# module "vault_example_vault-on-gce" {
-#   source  = "terraform-google-modules/vault/google//examples/vault-on-gce"
-#   version = "6.2.0"
-#   project_id     = var.project_id
-#   region = var.region
-#   kms_location = var.region
-#   kms_keyring = "vault-keyring"
-# }
+module "servers" {
+  source = "./servers"
+  ssh_key = var.ssh_key
+  vm_count = 3
+}
 
 module "vault" {
   source                       = "terraform-google-modules/vault/google"
@@ -30,4 +27,3 @@ module "vault" {
 output "vault_addr" {
   value = module.vault.vault_addr
 }
-
