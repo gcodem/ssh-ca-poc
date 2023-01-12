@@ -8,7 +8,7 @@ It seems to be a common knowledge that using key-based SSH is a better practice 
 
 It is probably important to say that there is nothing inherently bad in using key based authentication and that it’s an anti-pattern. It is not. However it has it’s own set of issues and if it can be done better then why not do it.
 
-![1 JHrY8BOjEQ_KEF9hMDYw6Q.webp](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/1_JHrY8BOjEQ_KEF9hMDYw6Q.webp)
+![key and cert](images/ssh_with_key.png)
 
 ### [First the issues related to key-based ssh:](https://smallstep.com/blog/use-ssh-certificates/)
 
@@ -37,11 +37,11 @@ It is probably important to say that there is nothing inherently bad in using ke
 
 Certificate authentication eliminates key approval and distribution. Instead of scattering public keys across static files, you bind a public key to a name with a _certificate_. A certificate is just a data structure that includes a public key, name, and ancillary data like an expiration date and permissions. The data structure is signed by a _certificate authority_ (CA).
 
-![Pasted image 20221228145525.png](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/Pasted_image_20221228145525.png)
+![features of intermediate certificates](images/Pasted_image_20221228145525.png)
 
-![Untitled](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/Untitled.png)
+![Untitled](images/Untitled.png)
 
-![Pasted image 20221228145120.png](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/Pasted_image_20221228145120.png)
+![Pasted image 20221228145120.png](images/Pasted_image_20221228145120.png)
 
 With public key authentication, when you SSH to a remote host for the
 first time, you’ll be presented with a security warning like this:
@@ -75,19 +75,17 @@ Now there is a number of ways you could implement SSH CA into the picture.
 > The signed SSH certificates is the simplest and most powerful in terms of setup complexity and in terms of being platform agnostic. By leveraging Vault's powerful CA capabilities and
 > functionality built into OpenSSH, clients can SSH into target hosts using their own local SSH keys.
 
-![Untitled](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/Untitled%201.png)
-
-![Untitled](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/Untitled%202.png)
+![title](images/Untitled 1.png)
 
 ### Deployment and usage
 
-![Untitled](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/Untitled%203.png)
+![Untitled](images/Untitled%203.png)
 
 Following Proof of Concept is based on official [Terraform module](https://github.com/terraform-google-modules/terraform-google-vault#vault-on-gce-terraform-module). As per documentation it is deployed according to applicable parts of the [production hardening guide](https://www.vaultproject.io/guides/operations/production.html). However to become production ready it needs some of the values changed from default values (more details in the module documentation). Again not the matter of this particular PoC as we only need operational Vault to demonstrate.
 
-![Pasted image 20221228150851.png](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/Pasted_image_20221228150851.png)
+![Pasted image 20221228150851.png](images/Pasted_image_20221228150851.png)
 
-![Untitled](Vault%20implementation%206b74ad9879ac4290857b687617ed7c7e/Untitled%204.png)
+![Untitled](images/Untitled%204.png)
 
 ## **The steps:**
 
