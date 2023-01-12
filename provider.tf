@@ -10,7 +10,7 @@ provider "google" {
 module "servers" {
   source = "./servers"
   ssh_key = var.ssh_key
-  vm_count = 3
+  vm_count = 4
 }
 
 module "vault" {
