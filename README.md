@@ -169,7 +169,7 @@ $ vault read -field=public_key ssh-host-signer/config/ca
 
 #Add the resulting public key to the known_hosts file with authority.
 # ~/.ssh/known_hosts
-@cert-authority *.example.com ssh-rsa AAAAB3NzaC1yc2EAAA...
+@cert-authority * ssh-rsa AAAAB3NzaC1yc2EAAA...
 
 ```
 
