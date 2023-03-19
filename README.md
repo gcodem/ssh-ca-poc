@@ -168,7 +168,7 @@ $ chmod 0640 /etc/ssh/ssh_host_rsa_key-cert.pub
 $ vault read -field=public_key ssh-host-signer/config/ca
 
 #Add the resulting public key to the known_hosts file with authority.
-# ~/.ssh/known_hosts
+# /etc/ssh/ssh_known_hosts
 @cert-authority * ssh-rsa AAAAB3NzaC1yc2EAAA...
 
 ```
