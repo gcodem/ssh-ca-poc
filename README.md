@@ -170,7 +170,80 @@ $ vault read -field=public_key ssh-host-signer/config/ca
 #Add the resulting public key to the known_hosts file with authority.
 # /etc/ssh/ssh_known_hosts
 @cert-authority * ssh-rsa AAAAB3NzaC1yc2EAAA...
+```
 
+### **Start audit vault**
+```bash
+vault audit enable file file_path=/var/log/vault_audit.log
+```
+**Vault metrics to GCP**
+[Prerequisites](https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/third-party/vault?_ga=2.152791481.-1887701175.1678728226#prerequisites)
+```bash
+#To collect Vault telemetry, you must install the Ops Agent on Vault Instance:
+curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+sudo bash add-google-cloud-ops-agent-repo.sh --also-install
+```
+```bash
+#To collect telemetry from your Vault instance, you must set the prometheus_retention_time field to a non-zero value in your HCL or JSON Vault configuration file.
+#Full configuration options can be found at https://www.vaultproject.io/docs/configuration
+telemetry {
+  prometheus_retention_time = "10m"
+  disable_hostname = false
+}
+```
+```bash
+#Create Prometheus ACL policy to access metrics endpoint.
+vault policy write prometheus-metrics - << EOF
+path "/sys/metrics" {
+  capabilities = ["read"]
+}
+EOF
+```
+```bash
+#Create an example token with the prometheus-metrics policy to access Vault metrics.
+#This token is used as `$VAULT_TOKEN` in your Ops Agent configuration for Vault.
+vault token create -field=token -policy prometheus-metrics > prometheus-token
+```
+#### **Example configuration**
+##### The following command creates the configuration to collect and ingest telemetry for Vault and restarts the Ops Agent.
+```bash
+# Configures Ops Agent to collect telemetry from the app and restart Ops Agent.
+
+set -e
+
+# Create a back up of the existing file so existing configurations are not lost.
+sudo cp /etc/google-cloud-ops-agent/config.yaml /etc/google-cloud-ops-agent/config.yaml.bak
+
+# Create a Vault token that has read capabilities to /sys/metrics policy.
+# For more information see: https://developer.hashicorp.com/vault/tutorials/monitoring/monitor-telemetry-grafana-prometheus?in=vault%2Fmonitoring#define-prometheus-acl-policy
+VAULT_TOKEN=$(cat prometheus-token)
+
+
+sudo tee /etc/google-cloud-ops-agent/config.yaml > /dev/null << EOF
+metrics:
+  receivers:
+    vault:
+      type: vault
+      token: $VAULT_TOKEN
+      endpoint: 127.0.0.1:8200
+  service:
+    pipelines:
+      vault:
+        receivers:
+          - vault
+logging:
+  receivers:
+    vault_audit:
+      type: vault_audit
+      include_paths: [/var/log/vault_audit.log]
+  service:
+    pipelines:
+      vault:
+        receivers:
+          - vault_audit
+EOF
+
+sudo service google-cloud-ops-agent restart
 ```
 
 # What will be different in production deployment
