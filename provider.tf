@@ -19,9 +19,7 @@ module "vault" {
   region                       = var.region
   kms_keyring                  = var.kms_keyring
   kms_crypto_key               = var.kms_crypto_key
-  storage_bucket_force_destroy = true
-  load_balancing_scheme        = var.load_balancing_scheme
-  allow_public_egress          = var.allow_public_egress
+  user_startup_script          = "vault-server-script.sh"
 }
 
 output "vault_addr" {

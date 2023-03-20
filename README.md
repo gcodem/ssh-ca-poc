@@ -185,4 +185,4 @@ There are few things that will need to be fine tuned for this to be production r
   - manual setup with copy pasting or installing and using vault on the target hosts
   - configuration management like ansible to copy the keys and add the required changes into the `sshd_config` on the relevant machines
   - using a custom golden image for our VM’s (or creating those) that will already have the mentioned configuration and key present
-- For host key signing the prerequisite is to have the host public key that then needs to be singed by vault - this again can be done using automation or whenever a new VM is spawned we can take it’s public key and sign it - there is then the step of populating clients `~/.ssh/known_hosts` file with that public key
+- For host key signing the prerequisite is to have the host public key that then needs to be singed by vault - this again can be done using automation or whenever a new VM is spawned we can take it’s public key and sign it - there is then the step of populating clients `/etc/ssh/ssh_known_hosts` file with that public key
