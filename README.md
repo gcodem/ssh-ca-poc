@@ -160,6 +160,77 @@ $ vault write -field=signed_key ssh-host-signer/sign/hostrole \
 $ chmod 0640 /etc/ssh/ssh_host_rsa_key-cert.pub
 #Restart the SSH service to pick up the changes.
 ```
+# **Groups & Policies**
+### github as an example
+
+#### add roles for specific groups
+```bash
+vault write ssh-client-signer/roles/my-role -<<"EOH"
+{
+  "algorithm_signer": "rsa-sha2-256",
+  "allow_user_certificates": true,
+  "allowed_users": "frontend",
+  "allowed_extensions": "permit-pty,permit-port-forwarding",
+  "default_extensions": {
+    "permit-pty": ""
+  },
+  "key_type": "ca",
+  "default_user": "frontend",
+  "ttl": "30m0s"
+}
+EOH
+```
+```bash
+vault write ssh-client-signer/roles/my-role -<<"EOH"
+{
+  "algorithm_signer": "rsa-sha2-256",
+  "allow_user_certificates": true,
+  "allowed_users": "devops",
+  "allowed_extensions": "permit-pty,permit-port-forwarding",
+  "default_extensions": {
+    "permit-pty": ""
+  },
+  "key_type": "ca",
+  "default_user": "devops",
+  "ttl": "30m0s"
+}
+EOH
+```
+
+#### create policies and respective tokens
+```bash
+vim secret-frontend-policy.hcl
+path "ssh-client-signer/sign/frontend" {  capabilities = ["read", "create", "update"] }
+
+vim secret-devops-policy.hcl
+path "ssh-client-signer/sign/devops" {  capabilities = ["read", "create", "update"] }
+```
+
+#### command to write policy
+```bash
+vault policy write secret-frontend-policy secret-frontend-policy.hcl
+vault policy write secret-devops-policy secret-devops-policy.hcl
+```
+
+#### Set a Github Organization in the configuration
+```bashvault write auth/github/config organization=${your github organization}```
+Now all users within the hashicorp GitHub organization are able to authenticate
+
+#### Teams Creation
+```bash
+vault write auth/github/map/teams/devops value=default,secret-frontend-policy
+vault write auth/github/map/teams/devops value=default,secret-devops-policy
+```
+Where default & applications are the policies
+
+#### Display all authentication method
+```bash
+vault auth list
+```
+
+#### Before login with Gitub auth method, make sure "VAULT_TOKEN" environment variable is unset. 
+unset VAULT_TOKEN
+vault login -method=github
 
 ### **Client-Side Host Verification**
 
