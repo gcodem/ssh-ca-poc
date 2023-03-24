@@ -213,7 +213,9 @@ vault policy write secret-devops-policy secret-devops-policy.hcl
 ```
 
 #### Set a Github Organization in the configuration
-```bashvault write auth/github/config organization=${your github organization}```
+```bash
+vault write auth/github/config organization=${your github organization}
+```
 Now all users within the hashicorp GitHub organization are able to authenticate
 
 #### Teams Creation
@@ -229,8 +231,10 @@ vault auth list
 ```
 
 #### Before login with Gitub auth method, make sure "VAULT_TOKEN" environment variable is unset. 
+```bash
 unset VAULT_TOKEN
 vault login -method=github
+```
 
 ### **Client-Side Host Verification**
 
