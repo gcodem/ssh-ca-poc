@@ -165,7 +165,7 @@ $ chmod 0640 /etc/ssh/ssh_host_rsa_key-cert.pub
 
 #### add roles for specific groups
 ```bash
-vault write ssh-client-signer/roles/my-role -<<"EOH"
+vault write ssh-client-signer/roles/frontend -<<"EOH"
 {
   "algorithm_signer": "rsa-sha2-256",
   "allow_user_certificates": true,
@@ -181,7 +181,7 @@ vault write ssh-client-signer/roles/my-role -<<"EOH"
 EOH
 ```
 ```bash
-vault write ssh-client-signer/roles/my-role -<<"EOH"
+vault write ssh-client-signer/roles/devops -<<"EOH"
 {
   "algorithm_signer": "rsa-sha2-256",
   "allow_user_certificates": true,
