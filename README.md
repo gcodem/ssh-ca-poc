@@ -220,7 +220,7 @@ Now all users within the hashicorp GitHub organization are able to authenticate
 
 #### Teams Creation
 ```bash
-vault write auth/github/map/teams/devops value=default,secret-frontend-policy
+vault write auth/github/map/teams/frontend value=default,secret-frontend-policy
 vault write auth/github/map/teams/devops value=default,secret-devops-policy
 ```
 Where default & applications are the policies
