@@ -212,10 +212,16 @@ vault policy write secret-frontend-policy secret-frontend-policy.hcl
 vault policy write secret-devops-policy secret-devops-policy.hcl
 ```
 
+#### Enable Github auth method
+```bash
+vault auth enable github
+```
+
 #### Set a Github Organization in the configuration
 ```bash
 vault write auth/github/config organization=${your github organization}
 ```
+
 Now all users within the hashicorp GitHub organization are able to authenticate
 
 #### Teams Creation
