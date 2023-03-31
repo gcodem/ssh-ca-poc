@@ -46,6 +46,6 @@ override.tf.json
 terraform.rc
 
 # Certyficates
-*crt
-*pem
-*pub
+*.crt
+*.pem
+*.pub
