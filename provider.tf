@@ -1,5 +1,4 @@
 provider "google" {
-
   credentials = file(var.credentials)
   project     = var.project_id
   region      = var.region
@@ -7,13 +6,8 @@ provider "google" {
 
 }
 
-module "servers_frontend" {
-  source = "./servers frontend"
-  ssh_key = var.ssh_key
-  vm_count = 2
-}
-module "servers_backend" {
-  source = "./servers backend"
+module "servers" {
+  source = "./servers"
   ssh_key = var.ssh_key
   vm_count = 2
 }
