@@ -1,6 +1,6 @@
 variable "network_name" {
   type    = string
-  default = "gevorg-lab-network"
+  default = "gcodem-lab-network"
 }
 
 variable "machine_type" {

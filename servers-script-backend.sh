@@ -7,10 +7,17 @@ apt update && apt install vault
 
 echo '' > /etc/ssh/trusted-user-ca-keys.pem
 
-
+mkdir /etc/ssh/auth_principals
+sudo echo 'ubuntu' > /etc/ssh/auth_principals/ubuntu
+sudo echo 'devops' > /etc/ssh/auth_principals/devops
+echo 'AuthorizedPrincipalsFile /etc/ssh/auth_principals/%u' >> /etc/ssh/sshd_config
 
 echo 'TrustedUserCAKeys /etc/ssh/trusted-user-ca-keys.pem' >> /etc/ssh/sshd_config
 echo 'HostKey /etc/ssh/ssh_host_rsa_key' >> /etc/ssh/sshd_config
 echo 'HostCertificate /etc/ssh/ssh_host_rsa_key-cert.pub' >> /etc/ssh/sshd_config
 chmod 0640 /etc/ssh/ssh_host_rsa_key-cert.pub
 systemctl restart ssh
+
+curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+sudo bash add-google-cloud-ops-agent-repo.sh --also-install
+sudo systemctl restart google-cloud-ops-agent.target
