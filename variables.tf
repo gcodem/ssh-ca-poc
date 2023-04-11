@@ -21,13 +21,13 @@ variable "zone" {
 
 variable "kms_keyring" {
   type        = string
-  default     = "vault-gevorg6"
+  default     = "vault-keyring"
   description = "Name of the GCP KMS keyring"
 }
 
 variable "kms_crypto_key" {
   type        = string
-  default     = "vault-gevorg-init6"
+  default     = "vault-crypto-key"
   description = "Name of the GCP KMS crypto key"
 }
 
