@@ -151,6 +151,12 @@ Getting rid of hostkey_authentication prompt
 ```bash
 # Mount the secrets engine. For the most security, mount at a different path from the client signer.
 $ vault secrets enable -path=ssh-host-signer ssh
+#Configure Vault with a CA for signing host keys using the /config/ca endpoint. If you do not have an internal CA, Vault can generate a keypair for you.
+$ vault write ssh-host-signer/config/ca generate_signing_key=true
+Key             Value
+---             -----
+public_key      ssh-rsa AAAAB3NzaC1yc2EA...
+#Extend host key certificate TTLs.
 $ vault secrets tune -max-lease-ttl=87600h ssh-host-signer
 #Create a role for signing host keys. Be sure to fill in the list of allowed domains, set allow_bare_domains, or both.
 $ vault write ssh-host-signer/roles/hostrole \
