@@ -94,7 +94,7 @@ For ease of automation deploy the Vault first:
 ```bash
 $ terraform apply -target=module.vault
 #terraform output will show the IP address of Vault server
-$ export VAULT_ADDR="$(terraform output vault_addr)"
+$ export VAULT_ADDR="$(terraform output -raw vault_addr)"
 $ export VAULT_CACERT="$(pwd)/ca.crt"
 #wait until vault starts ~2-3 minutes
 $ vault operator init \
